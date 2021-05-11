@@ -1,0 +1,340 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Impact of Texas Prison Expansion On Teen Pregnancy},
+  pdfauthor={Patrick Chase Anuka Revi},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{Impact of Texas Prison Expansion On Teen Pregnancy}
+\author{Patrick Chase Anuka Revi}
+\date{4/21/2021}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{\texorpdfstring{\textbf{Introduction}}{Introduction}}\label{introduction}}
+
+In this project we are looking at the impact of prison expansion on
+teenage pregnancy and live birth rate. Specifically , we are focusing on
+Texas state prison expansion during 1993 and early 2000 implemented by
+governor Ann Richards that tripled the size of the states prison system.
+Texas sudden prison boom had a major consequence -- state's prison
+population more than doubled in five years. It would be reasonable to
+assume that since many young men, especially young black men were
+incarcerated, teen fertility would drop due to imbalance in sex ratio.
+The goal of this paper is to determine if there is a causal relationship
+between the spike of incarceration rate among juveniles and teen
+pregnancy and live birth rate. We would expect this relationship to be
+negative, in order to evaluate this we are using synthetic controls. The
+advantage of using SCM is it looks like the treated case in key metrics
+in terms of the prior covariates and other post outcome predictors, thus
+it gives us apples to apples comparison.
+
+\hypertarget{data-exploration}{%
+\section{\texorpdfstring{\textbf{Data
+Exploration}}{Data Exploration}}\label{data-exploration}}
+
+We used \emph{Texas.dta} data found in Dr.~Scott Cunningham's textbook
+\emph{``Mixtape''}
+\url{https://mixtape.scunning.com/synthetic-control.html?panelset=r-code}
+and merged it with teen pregnancy data from CDC.gov.
+\url{https://www.cdc.gov/nchs/data-visualization/teen-births/index.htm}
+Data overview is given in the table below. Our variable of interest is
+teen pregnancy given by the variable name \emph{``state.Births''} (in
+absolute terms) or \emph{``state rate''}(state birth per 1000).
+
+It is important to visualize how teen pregnancy \& incarceration rate
+have changed over years. Figure 1 below shows 3 graphs, first one is an
+average teen pregnancy rate which has been decreasing from 1991 till
+2000. We do notice a decrease at a slower rate around the year of 1997
+but the overall trend is obvious. On the same figure we see average
+number of incarcerated black and white men that has been increasing from
+1990. The general trend however looks very different for these different
+groups, white male incarceration decreased from 1993 till 1995 and from
+1997 till 1999, while incarceration rate for black men has been
+increasing consistently.
+
+Correlation Table below shows that our data suffers from
+multicollinearity. We have some variables such as income and probation
+that has strong correlation with our variable of interest. In the next
+section, we will perform synthetic analysis in an attempt to identify
+causal relationship between teenage pregnancy and incarceration rate in
+the US from 1980-2000.
+
+\begin{figure}
+\centering
+\includegraphics{causal_Inf_final2_files/figure-latex/unnamed-chunk-1-1.pdf}
+\caption{Figure1}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{causal_Inf_final2_files/figure-latex/unnamed-chunk-2-1.pdf}
+\caption{Correlation Table}
+\end{figure}
+
+\newpage
+
+\hypertarget{synthetic-control-literature-review}{%
+\section{\texorpdfstring{\textbf{Synthetic Control: Literature
+Review}}{Synthetic Control: Literature Review}}\label{synthetic-control-literature-review}}
+
+Synthetic control methods were originally proposed in Abadie and
+Gardeazabal (2003) and Abadie et al.~(2010) with the aim to estimate the
+effects of aggregate interventions, that is, interventions that are
+implemented at an aggregate level affecting a small number of large
+units (such as a cities, regions, or countries), on some aggregate
+outcome of interest. Synthetic control uses data driven procedure and is
+based on the idea that, when the units of observation are a small number
+of aggregate entities, a combination of unaffected units often provides
+a more appropriate comparison than any single unaffected unit alone. SCM
+is transparent as we can tell how well synthetic control's outcome
+matches with the treated region's outcome before the treatment (some
+type of policy intervention).
+
+To create a synthetic control, data must be available for several
+periods before the treatment for the policy region and the pool of
+potential donor regions. Some assumptions in order for SCM to estimate
+unbiased effects are: i) policy (treatment) in the affected region
+cannot affect the outcomes in the pool of donor regions; ii)variables
+used to form the weights must have the donor pool regions that are
+similar to those for the affected region; iii) Variables and the outcome
+must have an approximate linear relationship.
+
+The SCM received much attention following Abadie, Diamond, and
+Hainmueller (2010)---hereafter, ADH--- and the code's public release. In
+that article, the authors examine how California's tobacco control
+program under Proposition 99, implemented in 1988, affected smoking by
+creating a synthetic control version of California. They estimate that
+by 2000, per capita sales of cigarette packs had fallen 26 packs because
+of the program. ADH assumed that the treatment had no effect on the
+outcome variable before the 1988 treatment (e.g., people did not
+stockpile cigarette packs in anticipation of the law's passage). t. ADH
+also assumed that the outcomes were independent across states, implying
+that the treatment in California did not affect the outcome in donor
+pool states. There must be states with predictor values near those of
+the treated state before treatment. ADH illustrate this with a
+problematic example: if one explanatory variable is the share of the
+population that is white, and California is 80 percent white, it could
+be represented by a synthetic state formed from an equal weighting of a
+65 percent white/35 percent nonwhite state with a 95 percent white/5
+percent nonwhite state. But if a strong nonlinear relationship exists
+between racial composition and smoking, the synthetic state could poorly
+approximate the treated state, resulting in interpolation bias. Abadie,
+Diamond, and Hainmueller (2015) also declare that the outcomes of the
+states in the donor pool should be driven by the same process as that
+found in the treated state before treatment.
+
+\newpage
+
+\hypertarget{synthetic-control-method}{%
+\subsection{\texorpdfstring{\textbf{Synthetic Control
+Method}}{Synthetic Control Method}}\label{synthetic-control-method}}
+
+-\textgreater Step 1: Identify predictors of the outcome variable
+
+-\textgreater Step 2: : Identify possible donor states to synthesize the
+control state.
+
+-\textgreater Step 3: Choose a method for selecting predictor weights.
+
+-\textgreater Step 4: Assess the pretreatment period goodness of fit of
+the synthetic control state (generated using the Synth package).
+
+-\textgreater Step 5: Conduct placebo test on states in the donor pool
+to evaluate the significance of the results for the treated state.
+
+-\textgreater Step 6: Conduct sensitivity analyses to further test the
+credibility of the results.
+
+\newpage
+
+\hypertarget{synthetic-control-for-teen-pregnancy---analysis}{%
+\section{\texorpdfstring{\textbf{Synthetic Control for Teen Pregnancy -
+Analysis}}{Synthetic Control for Teen Pregnancy - Analysis}}\label{synthetic-control-for-teen-pregnancy---analysis}}
+
+To construct our synthetic control unit we define a vector of weights
+\(W\). Each \(W\) then represents one particular weighted average of
+control units and therefore one potential synthetic control unit.To
+create the most similar synthetic control unit, the synth() function
+chooses the vector \(W^*\) to minimize a distance, \(kX_{1} − X_{0}Wk\)
+, between \(X_{1}\) and \(X_{0}W\), subject to the weight constraints.
+
+The \(V\) matrix is introduced to allow different weights to the
+variables in \(X_{0}\) and \(X_{1}\) depending on their predictive power
+on the outcome. An optimal choice of \(V\) assigns weights that minimize
+the mean square error of the synthetic control estimator, that is the
+expectation of \((Y_{1} − Y_{0}W^*)'(Y_{1} − Y_{0}W^*)\)
+
+In this procedure a \(V^*\) is chosen among all positive definite and
+diagonal matrices such that the mean squared prediction error (MSPE) of
+the outcome variable is minimized over some set of pre-intervention
+periods.
+
+Abadie et al.~(2010) describe how synthetic control methods facilitate
+inferential techniques akin to permutation tests-so-called placebo
+studies - iteratively apply the synthetic control method by randomly
+reassigning the intervention in time (i.e., pre-intervention dates)or
+across units (i.e., to control units where the intervention did not
+occur) to produce a set of placebo effects. Subsequently, we can compare
+the set of placebo effects to the effect that was estimated for the time
+and unit where the intervention actually occurred. This comparison is
+informative about the rarity of the magnitude of the treatment effect
+that was observed for the exposed unit.
+
+The first step is to reorganize the panel data set into an appropriate
+format that is suitable for the main estimator function synth(). At a
+minimum, synth() requires as inputs the four data matrices \(X_{1}\):
+control cases before the treatment (in our case teen pregnancy rate in
+every other state except Texas before the prison expansion), \(X_{0}\):
+the control cases after the treatment(teen pregnancy rate in every other
+state after the expansion except Texas), \(Z_{1}\): the treatment case
+before the treatment (teen pregnancy rate in Texas state before the
+prison expansion), and \(Z_{0}\): treatment case after the treatment
+(teen pregnancy rate in Texas state after the prison expansion ) that
+are needed to construct a synthetic control unit. The corresponding R
+code is given below:
+
+\textbf{dataprep\_out} obtains these 4 matrices for us and we are now
+able to perform synthetic control analysis. Graphs below show that for
+the pre treatment period 1990-1993, synthetic and treated group fit
+really well. Corresponding table further demonstrates that all the
+covariates between the treated and the synthetic cases are very similar
+The shortcoming of our analysis is that we do not have a better data
+that goes back to at least 1985 to demonstrate the fit better.
+
+\begin{verbatim}
+## 
+## X1, X0, Z1, Z0 all come directly from dataprep object.
+## 
+## 
+## **************** 
+##  searching for synthetic control unit  
+##  
+## 
+## **************** 
+## **************** 
+## **************** 
+## 
+## MSPE (LOSS V): 1.582761 
+## 
+## solution.v:
+##  0.001083467 0.2947555 0.41946 0.001834378 0.08534035 0.008314554 0.1892118 
+## 
+## solution.w:
+##  1.69e-08 3.4e-09 1.07e-08 1.11e-08 0.6226947 6.7e-09 2.4e-09 5.3e-09 2.1e-09 1.73e-08 2.9e-08 3.7e-09 6.2e-09 1.89e-08 1.21e-08 9.4e-09 8.7e-09 1.18e-08 4.589e-07 8.9e-09 7.7e-09 4.2e-09 6e-08 6.5e-09 0.3773043 1.26e-08 1.04e-08 8.4e-09 5.8e-09 5.5e-09 5.7e-09 9.7e-09 0 1.95e-08 1.03e-08 3.96e-08 1.31e-08 8.1e-09 1.38e-08 6.4e-09 1.7e-08 9.8e-09 1.24e-08 3e-10 8.3e-09 1.2e-08 6.4e-09 8.7e-09 9.8e-09 7.5e-09
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{causal_Inf_final2_files/figure-latex/unnamed-chunk-3-1.pdf}
+\caption{Treated (Texas) Vs Synthetic Groups}
+\end{figure}
+
+the SCM allows us to check the relative importance of each unit and the
+table shows that from the first 10 units, California which is unit
+number 6 contributes 62.3\% to the case. (P.S. analyzing all the US
+states contributions to the case, the rest of 37.7\% is from unit number
+28 which is Mississippi).
+
+\begin{tabular}{l|r|l|r}
+\hline
+  & w.weights & unit.names & unit.numbers\\
+\hline
+1 & 0.000 & Alabama & 1\\
+\hline
+2 & 0.000 & Alaska & 2\\
+\hline
+4 & 0.000 & Arizona & 4\\
+\hline
+5 & 0.000 & Arkansas & 5\\
+\hline
+6 & 0.623 & California & 6\\
+\hline
+8 & 0.000 & Colorado & 8\\
+\hline
+9 & 0.000 & Connecticut & 9\\
+\hline
+10 & 0.000 & Delaware & 10\\
+\hline
+11 & 0.000 & District of Columbia & 11\\
+\hline
+12 & 0.000 & Florida & 12\\
+\hline
+\end{tabular}
+
+\includegraphics{causal_Inf_final2_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\includegraphics{causal_Inf_final2_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\end{document}
