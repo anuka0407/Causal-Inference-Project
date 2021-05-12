@@ -32,6 +32,8 @@ overview is given in the table below. Our variable of interest is teen
 pregnancy given by the variable name *“state.Births”* (in absolute
 terms) or *“state rate”*(state birth per 1000).
 
+<bk><bk><bk>
+
 <table>
 
 <thead>
@@ -1332,6 +1334,8 @@ NA
 
 </table>
 
+<bk><bk><bk>
+
 It is important to visualize how teen pregnancy & incarceration rate
 have changed over years. Figure 1 below shows 3 graphs, first one is an
 average teen pregnancy rate which has been decreasing from 1991 till
@@ -1350,10 +1354,21 @@ section, we will perform synthetic analysis in an attempt to identify
 causal relationship between teenage pregnancy and incarceration rate in
 the US from 1980-2000.
 
-![Figure1](causal_Inf_final2_files/figure-gfm/unnamed-chunk-2-1.png)
+<div class="figure" style="text-align: center">
 
-![Correlation
-Table](causal_Inf_final2_files/figure-gfm/unnamed-chunk-3-1.png)
+<img src="causal_Inf_final2_files/figure-gfm/unnamed-chunk-2-1.png" alt="Figure1"  />
+
+<p class="caption">
+
+Figure1
+
+</p>
+
+</div>
+
+<bk><bk><bk>
+
+<img src="causal_Inf_final2_files/figure-gfm/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
 
 # **Synthetic Control - Literature Review**
 
@@ -1467,14 +1482,22 @@ is given below:
 
 -----
 
-dataprep\_out \<- dataprep( foo = prep\_data\_in, predictors =
-c(“poverty”, “income”, “bmprison”, “alcohol”, “aidscapita”, “black”,
-“perc1519”), predictors.op = “mean”, time.predictors.prior =
-1990:1993, dependent = “State.Rate”, unit.variable = “statefip”,
-unit.names.variable = “state”, time.variable = “year”,
-treatment.identifier = 48, controls.identifier =
-c(1,2,4:6,8:13,15:42,44:47,49:51,53:56),  
-time.optimize.ssr = 1990:1993, time.plot = 1990:2000 )
+``` r
+dataprep_out <- dataprep(
+  foo = prep_data_in,
+  predictors = c("poverty", "income", "bmprison", "alcohol", "aidscapita", "black", "perc1519"),
+  predictors.op = "mean",
+  time.predictors.prior = 1990:1993,
+  dependent = "State.Rate",
+  unit.variable = "statefip",
+  unit.names.variable = "state",
+  time.variable = "year",
+  treatment.identifier = 48,
+  controls.identifier = c(1,2,4:6,8:13,15:42,44:47,49:51,53:56),  
+  time.optimize.ssr = 1990:1993,
+  time.plot = 1990:2000
+)
+```
 
 -----
 
@@ -1486,8 +1509,17 @@ between the treated and the synthetic cases are very similar The
 shortcoming of our analysis is that we do not have a better data that
 goes back to at least 1985 to demonstrate the fit better.
 
-![Treated (Texas) Vs Synthetic
-Groups](causal_Inf_final2_files/figure-gfm/unnamed-chunk-5-1.png)
+<div class="figure" style="text-align: center">
+
+<img src="causal_Inf_final2_files/figure-gfm/unnamed-chunk-5-1.png" alt="Treated (Texas) Vs Synthetic Groups"  />
+
+<p class="caption">
+
+Treated (Texas) Vs Synthetic Groups
+
+</p>
+
+</div>
 
 The SCM allows us to check the relative importance of each unit and the
 table shows that from the first 10 units, California which is unit
@@ -1833,11 +1865,20 @@ adults because of higher incarceration rate (especially higher juvenile
 incarceration rate). Explaining reasons behind our positive difference
 is beyond the scope of this research paper.
 
-![Actual Difference Between Teen Pregnancy rate After and Before Texas
-Prison
-Expansion](causal_Inf_final2_files/figure-gfm/unnamed-chunk-8-1.png)
+<div class="figure" style="text-align: center">
 
-![](causal_Inf_final2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+<img src="causal_Inf_final2_files/figure-gfm/unnamed-chunk-8-1.png" alt="Actual Difference Between Teen Pregnancy rate After and Before Texas Prison Expansion"  />
+
+<p class="caption">
+
+Actual Difference Between Teen Pregnancy rate After and Before Texas
+Prison Expansion
+
+</p>
+
+</div>
+
+<img src="causal_Inf_final2_files/figure-gfm/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 It is important to note that there are some shortcomings to our
 analysis. For future research, it would be beneficial to have a better

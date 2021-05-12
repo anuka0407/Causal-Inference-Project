@@ -55,6 +55,9 @@ Data overview is given in the table below. Our variable of interest is teen preg
 
 
 
+
+
+
 ```{r Data load and clean, error=FALSE}
 
 
@@ -94,11 +97,15 @@ prep_data_in_try<-prep_data_in%>%rename(teen_births=)
 ```
 
 
+<bk><bk><bk>
+
 
 ```{r, include=TRUE}
 head(prep_data_in)%>%kable()
 ```
 
+
+<bk><bk><bk>
 
 
 It is important to visualize how teen pregnancy & incarceration  rate have changed over years. Figure 1 below shows 3 graphs, first one is an average teen pregnancy rate which has been decreasing from 1991 till 2000. We do notice a decrease at a slower rate around the year of 1997 but the overall trend is obvious. On the same figure we see average number of incarcerated black and white men that has been increasing from 1990. The general trend however looks very different for these different groups, white male incarceration decreased from 1993 till 1995 and from 1997 till 1999, while incarceration rate for black men has been increasing consistently.
@@ -112,7 +119,7 @@ Correlation Table below shows that our data suffers from multicollinearity. We h
 
 
 
-```{r, fig.cap="Figure1", include=TRUE}
+```{r, fig.cap="Figure1", include=TRUE, fig.align="center"}
 data<-prep_data_in%>%
  mutate(yr=as.Date(as.character(year), format="%Y"),
         y=year(yr))
@@ -139,7 +146,13 @@ multiplot(g2,g3, g4, cols=3)
 ```
 
 
-```{r, include=TRUE, fig.cap="Correlation Table"}
+
+
+<bk><bk><bk>
+
+
+
+```{r, include=TRUE, out.width="90%", fig.align="center"}
 num_cols <- unlist(lapply(prep_data_in, is.numeric)) # Identify numeric columns
 data_num <- prep_data_in[, num_cols]   
 data_num<-na.omit(data_num)
@@ -263,8 +276,12 @@ The first step is to reorganize the panel data set into an appropriate format th
 
 
 
+
+
 ***
 
+
+```{r Synthetic control construct, echo=TRUE, include=TRUE}
 dataprep_out <- dataprep(
   foo = prep_data_in,
   predictors = c("poverty", "income", "bmprison", "alcohol", "aidscapita", "black", "perc1519"),
@@ -281,33 +298,10 @@ dataprep_out <- dataprep(
 )
 
 
-***
-
-
-
-
-
-```{r Synthetic control construct, echo=FALSE}
-dataprep_out <- dataprep(
-  foo = prep_data_in,
-  predictors = c("poverty", "income", "bmprison", "alcohol", "aidscapita", "black", "perc1519"),
-  predictors.op = "mean",
-  time.predictors.prior = 1990:1993,
-  dependent = "State.Rate",
-  unit.variable = "statefip",
-  unit.names.variable = "state",
-  time.variable = "year",
-  treatment.identifier = 48,
-  controls.identifier = c(1,2,4:6,8:13,15:42,44:47,49:51,53:56),  
-  time.optimize.ssr = 1990:1993,
-  time.plot = 1990:2000
-)
-
-
-print(dataprep_out$X0) # check 
-print(dataprep_out$Z1) # teen pregnancy rate in the pre-intervention period
 ```
 
+
+***
 
 
 
@@ -317,12 +311,13 @@ print(dataprep_out$Z1) # teen pregnancy rate in the pre-intervention period
 
 
 ```{r, include=FALSE}
-
+print(dataprep_out$X0) # check 
+print(dataprep_out$Z1) # teen pregnancy rate in the pre-intervention period
 synth_out <- synth(data.prep.obj = dataprep_out)
 ```
 
 
-```{r, include=TRUE, fig.cap="Treated (Texas) Vs Synthetic Groups"}
+```{r, include=TRUE, fig.cap="Treated (Texas) Vs Synthetic Groups", fig.align="center"}
 path.plot(synth_out, dataprep_out)
 ```
 
@@ -346,7 +341,7 @@ The SCM allows us to check the relative importance of each unit and the table sh
 
 
 
-```{r, fig.cap="The Relative Importance of Each Unit", include=TRUE}
+```{r, fig.cap="The Relative Importance of Each Unit", include=TRUE, fig.align="center"}
 synth.tables$tab.w[1:10, ]%>%kable()
 ```
 
@@ -361,7 +356,7 @@ To reiterate **Y_{without_expansion_TX}** which refers to pregnancy rate before 
 
 
 
-```{r, include=TRUE, cache=TRUE, fig.cap="Actual Difference Between Teen Pregnancy rate After and Before Texas Prison Expansion"}
+```{r, include=TRUE, cache=TRUE, fig.cap="Actual Difference Between Teen Pregnancy rate After and Before Texas Prison Expansion", fig.align="center"}
 
 gaps.plot(synth_out, dataprep_out, Ylab = 'Gap In Real Teen Pregnancy Birth Rate', 
          
@@ -376,7 +371,7 @@ placebos <- generate.placebos(dataprep_out, synth_out, Sigf.ipop = 3)
 ```
 
 
-```{r, include=TRUE}
+```{r, include=TRUE, fig.align="center"}
 mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
 
 ```
